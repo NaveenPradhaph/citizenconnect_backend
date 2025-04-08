@@ -5,9 +5,8 @@ const User = require("../models/user");
 const router = express.Router();
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const BlockchainDBBridge = require("../blockchain-mongodb-bridge");
+const Description = require("../models/desc");
 
-const bridge = new BlockchainDBBridge();
 const authMiddleware = (req, res, next) => {
   const token =
     req.cookies?.token || req.header("Authorization")?.split(" ")[1];
@@ -154,16 +153,6 @@ router.post(
         ? req.files.map((file) => file.buffer.toString("base64"))
         : [];
 
-      // const result = await bridge.createPetition({
-      //   title,
-      //   description,
-      //   category,
-      //   governmentLevel,
-      //   priority,
-      //   aiSummary,
-      //   userId,
-      //   attachments,
-      // });
       const petition = new Petition({
         blockchainId: -99999,
         title: title,
@@ -179,17 +168,17 @@ router.post(
 
       await petition.save();
 
+      const descDoc = new Description({
+        description: petition.description,
+        blockchainId: petition.blockchainId,
+        aiSummary: petition.aiSummary,
+        petitionId: petition._id,
+      });
+
+      await descDoc.save();
+
       res.status(201).json({message:"Petition created successfully"});
 
-
-      // if (result.success) {
-      // } else {
-      //   res.status(500).json({
-      //     success: false,
-      //     message: result.message,
-      //     petitionId: result.petitionId || null,
-      //   });
-      // }
     } catch (error) {
       res.status(500).json({
         success: false,
