@@ -20,7 +20,7 @@ contract PetitionManagement{
 
     uint256 private petitionCounter;
     mapping(uint256 => Petition) public petitions;
-    mapping(uint256 => mapping(address => bool)) public hasSigned;
+    mapping(uint256 => mapping(bytes32 => bool)) public hasSigned;
     mapping(uint256 => mapping(uint256 => Signature)) public signatures;
     mapping(uint256 => uint256) public signatureCounters;
 
@@ -38,8 +38,8 @@ contract PetitionManagement{
         _;
     }
     
-    modifier hasNotSigned(uint256 _petitionId) {
-        require(!hasSigned[_petitionId][msg.sender], "You have already signed this petition");
+    modifier hasNotSigned(uint256 _petitionId,bytes32 emailHash) {
+        require(!hasSigned[_petitionId][emailHash], "You have already signed this petition");
         _;
     }
 
@@ -68,21 +68,23 @@ contract PetitionManagement{
 
     function signPetition(
         uint256 _petitionId,
-        string memory _name
+        string memory _name,
+        string memory _email
     ) external 
         petitionExists(_petitionId)
         petitionActive(_petitionId)
-        hasNotSigned(_petitionId)
     {
+        bytes32 emailHash = keccak256(abi.encodePacked(_email));
+        require(!hasSigned[_petitionId][emailHash], "You have already signed this petition");
         uint256 signatureId = signatureCounters[_petitionId];
-        
+
         signatures[_petitionId][signatureId] = Signature({
             signer: msg.sender,
             name: _name,
             timestamp: block.timestamp
         });
         
-        hasSigned[_petitionId][msg.sender] = true;
+        hasSigned[_petitionId][emailHash] = true;
         petitions[_petitionId].signatureCount++;
         signatureCounters[_petitionId]++;
         

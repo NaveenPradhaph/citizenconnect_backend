@@ -59,9 +59,9 @@ app.post("/api/petitions", async (req, res) => {
 app.post("/api/petitions/:id/sign", async (req, res) => {
   try {
     const petitionId = parseInt(req.params.id);
-    const { name, fromAddress } = req.body;
+    const { name, email, fromAddress } = req.body;
 
-    const result = await bridge.signPetition({ petitionId, name, fromAddress });
+    const result = await bridge.signPetition({ petitionId, name, email, fromAddress });
     if (result.success) {
       res.status(201).json(result);
     } else {

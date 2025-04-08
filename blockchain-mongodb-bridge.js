@@ -78,7 +78,7 @@ class BlockchainDBBridge {
     const result = await this.petitionSystem.signPetition(
       signatureData.petitionId,
       signatureData.name,
-      signatureData.fromAddress
+      signatureData.email
     );
 
     if (result.success) {
@@ -97,6 +97,7 @@ class BlockchainDBBridge {
           signer: blockchainSignature.signer,
           name: blockchainSignature.name,
           timestamp: blockchainSignature.timestamp,
+          email: signatureData.email,
         });
 
         await signature.save();

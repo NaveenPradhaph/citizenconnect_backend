@@ -62,19 +62,20 @@ class PetitionSystem {
         transactionHash: result.tx
       };
     } catch (error) {
-        return {
-          success: false,
-          message: `Failed to create petition: ${error.message}`
-        };
+      return {
+        success: false,
+        message: `Failed to create petition: ${error.message}`
+      };
     }
   }
-
-  async signPetition(petitionId, name, fromAddress) {
+  
+  async signPetition(petitionId, name, email) {
     try {
       const result = await this.contract.signPetition(
         petitionId,
         name,
-        { from: fromAddress || this.accounts[0] }
+        email,
+        { from: this.accounts[0] }
       );
       
       return {
