@@ -22,26 +22,26 @@ class BlockchainDBBridge {
 
   // Create petition on blockchain and store additional data in MongoDB
     async createPetition(petitionData) {
-        if (!this.initialized) await this.init();
+        // if (!this.initialized) await this.init();
 
         // Create petition on blockchain
-        const result = await this.petitionSystem.createPetition(
-            petitionData.title,
-            petitionData.description,
-            petitionData.fromAddress
-        );
+        // const result = await this.petitionSystem.createPetition(
+        //     petitionData.title,
+        //     petitionData.description,
+        //     petitionData.fromAddress
+        // );
 
-        if (result.success) {
+        // if (true) {
         try {
             // Get petition details from blockchain
-            const blockchainPetition = await this.petitionSystem.getPetition(result.petitionId);
+            // const blockchainPetition = await this.petitionSystem.getPetition(result.petitionId);
             
             // Store in MongoDB with additional data
             const petition = new Petition({
-                blockchainId: result.petitionId,
+                blockchainId: -99999,
                 title: petitionData.title,
                 description: petitionData.description,
-                creator: blockchainPetition.petition.creator,
+                creator: '0x1db8A58efF4B9e8929D778fe165279eeB49d7379',
                 category: petitionData.category || 'Uncategorized',
                 governmentLevel: petitionData.governmentLevel || 'Local',
                 priority: petitionData.priority || 'Medium',
@@ -64,9 +64,7 @@ class BlockchainDBBridge {
                 petitionId: result.petitionId
             };
         }
-        } else {
-            return result; // Return blockchain error
-        }
+        // } 
     }
     
     // Sign petition on blockchain and store additional data in MongoDB

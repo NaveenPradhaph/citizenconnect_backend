@@ -154,25 +154,42 @@ router.post(
         ? req.files.map((file) => file.buffer.toString("base64"))
         : [];
 
-      const result = await bridge.createPetition({
-        title,
-        description,
-        category,
-        governmentLevel,
-        priority,
-        aiSummary,
-        userId,
-        attachments,
+      // const result = await bridge.createPetition({
+      //   title,
+      //   description,
+      //   category,
+      //   governmentLevel,
+      //   priority,
+      //   aiSummary,
+      //   userId,
+      //   attachments,
+      // });
+      const petition = new Petition({
+        blockchainId: -99999,
+        title: title,
+        description: description,
+        creator: '0x1db8A58efF4B9e8929D778fe165279eeB49d7379',
+        category: category || 'Uncategorized',
+        governmentLevel: governmentLevel || 'Local',
+        priority: priority || 'Medium',
+        userId: userId,
+        aiSummary: aiSummary || 'Will take some time. Please, wait.',
+        attachments: attachments,
       });
-      if (result.success) {
-        res.status(201).json(result);
-      } else {
-        res.status(500).json({
-          success: false,
-          message: result.message,
-          petitionId: result.petitionId || null,
-        });
-      }
+
+      await petition.save();
+
+      res.status(201).json({message:"Petition created successfully"});
+
+
+      // if (result.success) {
+      // } else {
+      //   res.status(500).json({
+      //     success: false,
+      //     message: result.message,
+      //     petitionId: result.petitionId || null,
+      //   });
+      // }
     } catch (error) {
       res.status(500).json({
         success: false,
