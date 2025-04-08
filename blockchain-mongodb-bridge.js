@@ -42,7 +42,6 @@ class BlockchainDBBridge {
                 title: petitionData.title,
                 description: petitionData.description,
                 creator: blockchainPetition.petition.creator,
-                createdAt: petitionData.createdAt,
                 category: petitionData.category || 'Uncategorized',
                 governmentLevel: petitionData.governmentLevel || 'Local',
                 priority: petitionData.priority || 'Medium',

@@ -31,7 +31,7 @@ const PetitionSchema = new mongoose.Schema({
     priority: { type: String, enum: ["Low", "Medium", "High", "Urgent"], default: "Medium" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    // userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     department: { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
     governmentLevel: { type: String, enum: ["Local", "State", "Central"], default: "Local" },
