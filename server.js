@@ -16,7 +16,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 
 mongoose
-  .connect("mongodb://localhost:27017/petition_management")
+  .connect(`${process.env.MONGO_URI}/petition_management`)
   .then(() => {
     console.log("Connected to MongoDB");
   })

@@ -157,28 +157,33 @@ router.post(
         blockchainId: -99999,
         title: title,
         description: description,
-        creator: '0x1db8A58efF4B9e8929D778fe165279eeB49d7379',
-        category: category || 'Uncategorized',
-        governmentLevel: governmentLevel || 'Local',
-        priority: priority || 'Medium',
+        creator: "0x1db8A58efF4B9e8929D778fe165279eeB49d7379",
+        category: category || "Uncategorized",
+        governmentLevel: governmentLevel || "Local",
+        priority: priority || "Medium",
         userId: userId,
-        aiSummary: aiSummary || 'Will take some time. Please, wait.',
+        aiSummary: aiSummary || "Will take some time. Please, wait.",
         attachments: attachments,
       });
 
       await petition.save();
 
-      const descDoc = new Description({
-        description: petition.description,
-        blockchainId: petition.blockchainId,
-        aiSummary: petition.aiSummary,
-        petitionId: petition._id,
-      });
+      try {
+        const descDoc = new Description({
+          description: petition.description,
+          blockchainId: petition.blockchainId,
+          aiSummary: petition.aiSummary,
+          priority: priority || "Uninitialized",
+          petitionId: petition._id,
+          category: petition.category,
+        });
+        await descDoc.save();
+      } catch (err) {
+        console.error("Description save error:", descError);
+        return res.status(500).json({ message: "Error saving description" });
+      }
 
-      await descDoc.save();
-
-      res.status(201).json({message:"Petition created successfully"});
-
+      res.status(201).json({ message: "Petition created successfully" });
     } catch (error) {
       res.status(500).json({
         success: false,
