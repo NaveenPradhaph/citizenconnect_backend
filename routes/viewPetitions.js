@@ -56,7 +56,6 @@ router.get("/petitions/:id/vote", async (req, res) => {
       return res.status(404).json({ message: "Petition not found" });
     }
 
-
     if (petition.votedUsers.includes(userId)) {
       return res.status(200).json({ voted: true });
     } else {
@@ -69,4 +68,37 @@ router.get("/petitions/:id/vote", async (req, res) => {
   }
 });
 
+router.post("/petitions/:id/comment", async (req, res) => {
+  const { id } = req.params;
+  const { userId, userName, userRole, text } = req.body;
+
+  if (!userId || !userName || !userRole || !text) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const petition = await Petition.findById(id);
+    if (!petition) {
+      return res.status(404).json({ message: "Petition not found" });
+    }
+
+    const newComment = {
+      text,
+      createdAt: new Date(),
+      userId,
+      userName,
+      userRole,
+    };
+
+    petition.comments.push(newComment);
+    petition.updatedAt = new Date();
+
+    await petition.save();
+
+    res.status(200).json(petition);
+  } catch (err) {
+    console.error("Error adding comment:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;

@@ -13,7 +13,8 @@ const DescSchema = new mongoose.Schema({
   block_generate : {type:Boolean, default:false},
   ai_generate : {type:Boolean, default:false},
   urgency_generate : {type:Boolean, default:false},
-  category_generator : {type:Boolean, default:false}
+  category_generator : {type:Boolean, default:false},
+  createdAt : {type:Date, default:Date.now}
 });
 
 module.exports = mongoose.model("Description", DescSchema);
