@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-
 // Import the Petition model
 const Petition = require("../models/petition");
 
@@ -94,7 +93,14 @@ router.post("/petitions/:id/comment", async (req, res) => {
     petition.updatedAt = new Date();
 
     await petition.save();
-
+    const io = req.app.get("io"); 
+    io.emit("new_comment", {
+      petitionId: id,
+      comment: {
+        ...newComment,
+        createdAt: newComment.createdAt.toISOString(),
+      },
+    });
     res.status(200).json(petition);
   } catch (err) {
     console.error("Error adding comment:", err);

@@ -1,11 +1,20 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { Server } = require("socket.io");
+const http = require("http");
 // const BlockchainDBBridge = require("./blockchain-mongodb-bridge");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
+const server = http.createServer(app); // 👈 Correct place to do this
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 // const bridge = new BlockchainDBBridge();
 
 // Middleware
@@ -14,6 +23,8 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
+app.set("io", io);
+
 
 mongoose
   .connect(`${process.env.MONGO_URI}/petition_management`)
